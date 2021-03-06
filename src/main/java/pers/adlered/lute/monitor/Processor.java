@@ -60,11 +60,13 @@ public class Processor implements Runnable {
         byte readByte;
         int total = 0;
         if (contentLength != 0) {
+            byte[] byteArr = new byte[contentLength];
             do {
                 readByte = (byte) inputStream.read();
-                lineByteList.add(readByte);
+                byteArr[total] = readByte;
                 total++;
-            } while (total < contentLength);//消息体读还未读完
+            } while (total < contentLength);
+            return new String(byteArr, StandardCharsets.UTF_8);
         } else {
             do {
                 readByte = (byte) inputStream.read();
