@@ -1,13 +1,16 @@
 package pers.adlered.lute.monitor;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class Processor implements Runnable {
 
-    private Socket socket;
+    private final Socket socket;
 
     public Processor(Socket socket) {
         this.socket = socket;
@@ -16,38 +19,66 @@ public class Processor implements Runnable {
     @Override
     public void run() {
         try {
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            StringBuilder stringBuilder = new StringBuilder();
-            /**
-             * step = 0 正在接收 head 部分请求
-             * step = 1 正在接收请求体
-             * step = 2 接收完毕
-             */
-            int step = 0;
-            PrintWriter printWriter = new PrintWriter(socket.getOutputStream(), false);
-            for (String line = null; (line = bufferedReader.readLine()) != null; ) {
-                stringBuilder.append(line).append("\n");
-                if (line.isEmpty()) {
-                    step++;
+            System.out.println(Thread.currentThread().toString() + "1 | " + System.currentTimeMillis());
+            InputStream inputStream = socket.getInputStream();
+            String line;
+            int contentLength = 0;
+            do {
+                line = readLine(inputStream, 0);
+                if (line.startsWith("Content-Length")) {
+                    contentLength = Integer.parseInt(line.split(":")[1].trim());
                 }
-                if (step == 2) {
-                    break;
-                }
-            }
-            System.out.println(stringBuilder.toString());
-            printWriter.print("HTTP/1.1 200 OK\r\n" +
-                    "Content-Length: 981\r\n" +
-                    "Connection: keep-alive\r\n" +
+                System.out.print(line);
+            } while (!line.equals("\r\n"));
+            System.out.print(readLine(inputStream, contentLength));
+            System.out.println(Thread.currentThread().toString() + "2 | " + System.currentTimeMillis());
+
+            String body = "hello lutehttp~~你好世界";
+            Calendar calendar = Calendar.getInstance();
+            SimpleDateFormat greenwichDate = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss 'GMT'", Locale.US);
+            String response = "" +
+                    "HTTP/1.1 200 OK\r\n" +
+                    "Content-Length: " + body.length() + "\r\n" +
+                    "Connection: close\r\n" +
                     "Content-Type: text/plain; charset=utf-8\r\n" +
-                    "Date: Sat, 06 Mar 2021 14:57:24 GMT\r\n" +
-                    "Keep-Alive: timeout=4\r\n" +
-                    "Proxy-Connection: keep-alive\r\n" +
-                    "Server: fasthttp\r\n\r\n" +
-                    "hello lute!\r\n\r\n");
-            printWriter.flush();
+                    "Date: " + greenwichDate.format(calendar.getTime()) + "\r\n" +
+                    "Server: fasthttp\r\n" +
+                    "\r\n" +
+                    body;
+            byte[] responseByte = response.getBytes(StandardCharsets.UTF_8);
+            OutputStream outputStream = socket.getOutputStream();
+            outputStream.write(responseByte);
+            outputStream.flush();
             socket.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+    private static String readLine(InputStream inputStream, int contentLength) throws IOException {
+        ArrayList<Byte> lineByteList = new ArrayList<>();
+        byte readByte;
+        int total = 0;
+        if (contentLength != 0) {
+            do {
+                readByte = (byte) inputStream.read();
+                lineByteList.add(readByte);
+                total++;
+            } while (total < contentLength);//消息体读还未读完
+        } else {
+            do {
+                readByte = (byte) inputStream.read();
+                lineByteList.add(readByte);
+            } while (readByte != 10);
+        }
+
+        byte[] tmpByteArr = new byte[lineByteList.size()];
+        for (int i = 0; i < lineByteList.size(); i++) {
+            tmpByteArr[i] = lineByteList.get(i);
+        }
+        lineByteList.clear();
+
+        return new String(tmpByteArr, StandardCharsets.UTF_8);
+    }
+
 }
