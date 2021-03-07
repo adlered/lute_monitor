@@ -4,7 +4,7 @@ public class LuteMonitor {
 
     public static void main(String[] args) {
         if (!argsAvailable(args)) {
-            System.out.println("Usage: java -jar LuteMonitor.jar [monitorProxyPort] [luteServer] [ipLimitOptions]\n" +
+            System.out.println("Usage: java -jar lute_monitor.jar [monitorProxyPort] [luteServer] [ipLimitOptions]\n" +
                     "luteServer      ||  Example: localhost:8249\n" +
                     "ipLimitOptions  ||  Example (1 IP 10 Access In 30 Second): 10/30");
             System.exit(-1);

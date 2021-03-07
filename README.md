@@ -9,7 +9,7 @@
 在 release 中下载 jar 文件并运行：
 
 ```
-java -jar LuteMonitor.jar [monitorProxyPort] [luteServer] [ipLimitOptions]
+java -jar lute_monitor.jar [monitorProxyPort] [luteServer] [ipLimitOptions]
 ```
 
 **monitorProxyPort** 设置 Lute 监控机代理的监听端口（连接到该端口访问 Lute_HTTP 服务）  
