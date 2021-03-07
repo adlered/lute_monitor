@@ -35,7 +35,7 @@ public class Processor implements Runnable {
         String content = readLine(inputStream, contentLength);
         stringBuilder.append(content);
         // 消除 content 的换行符，方便打印到日志
-        content = content.replaceAll("\n", "");
+        content = content.replaceAll("\r|\n", "");
         if (content.length() <= 30) {
             System.out.println("[Process] " + System.currentTimeMillis() + " | " + this.socket.getInetAddress().getHostAddress() +
                     " | " + content);
@@ -92,7 +92,7 @@ public class Processor implements Runnable {
             String content = readLine(inputStream, contentLength);
             stringBuilder.append(content);
             // 消除 content 的换行符，方便打印到日志
-            content = content.replaceAll("\n", "");
+            content = content.replaceAll("\r|\n", "");
             if (content.length() <= 30) {
                 System.out.println("[Request] " + System.currentTimeMillis() + " | " + this.socket.getInetAddress().getHostAddress() +
                         " | " + content);
@@ -101,7 +101,22 @@ public class Processor implements Runnable {
                         " | " + content.substring(0, 30) + " ......");
             }
             String request = stringBuilder.toString();
-            String response = requestToServer(request);
+            // 缓存
+            String response;
+            try {
+                response = Cache.read(request);
+                content = response.replaceAll("\r|\n", "");
+                if (content.length() <= 30) {
+                    System.out.println("[Cache] " + System.currentTimeMillis() + " | " + this.socket.getInetAddress().getHostAddress() +
+                            " | " + content);
+                } else {
+                    System.out.println("[Cache] " + System.currentTimeMillis() + " | " + this.socket.getInetAddress().getHostAddress() +
+                            " | " + content.substring(0, 30) + " ......");
+                }
+            } catch (NullPointerException e) {
+                response = requestToServer(request);
+                Cache.write(request, response);
+            }
             byte[] responseByte = response.getBytes(StandardCharsets.UTF_8);
             OutputStream outputStream = socket.getOutputStream();
             outputStream.write(responseByte);
