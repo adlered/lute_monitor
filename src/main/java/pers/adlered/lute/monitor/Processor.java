@@ -43,8 +43,7 @@ public class Processor implements Runnable {
             System.out.println("[Process] " + System.currentTimeMillis() + " | " + this.socket.getInetAddress().getHostAddress() +
                     " | " + content.substring(0, 30) + " ......");
         }
-
-
+        socket.close();
         return stringBuilder.toString();
     }
 
