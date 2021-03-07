@@ -6,4 +6,6 @@ public class Vals {
     public static String luteServerIP;
     public static int luteServerPort;
     public static String ipLimitOptions;
+
+    volatile public static long count;
 }

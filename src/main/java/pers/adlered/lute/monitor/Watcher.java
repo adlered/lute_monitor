@@ -30,6 +30,7 @@ public class Watcher implements Runnable {
                     // 核验通过，允许使用 Lute 服务
                     Processor processor = new Processor(socket);
                     new Thread(processor).start();
+                    Vals.count++;
                 } else {
                     socket.close();
                     System.out.println("[Denied] " + ip);

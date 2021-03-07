@@ -24,7 +24,6 @@ public class Cache {
     }
 
     public static void write(String str, String value) {
-
         cacheMap.put(str, value);
     }
 }
