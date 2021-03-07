@@ -94,10 +94,10 @@ public class Processor implements Runnable {
             // 消除 content 的换行符，方便打印到日志
             content = content.replaceAll("\r|\n", "");
             if (content.length() <= 30) {
-                System.out.println("[Request] " + System.currentTimeMillis() + " | " + this.socket.getInetAddress().getHostAddress() +
+                System.out.println("[Request " + Vals.count + "] " + System.currentTimeMillis() + " | " + this.socket.getInetAddress().getHostAddress() +
                         " | " + content);
             } else {
-                System.out.println("[Request] " + System.currentTimeMillis() + " | " + this.socket.getInetAddress().getHostAddress() +
+                System.out.println("[Request " + Vals.count + "] " + System.currentTimeMillis() + " | " + this.socket.getInetAddress().getHostAddress() +
                         " | " + content.substring(0, 30) + " ......");
             }
             String request = stringBuilder.toString();
