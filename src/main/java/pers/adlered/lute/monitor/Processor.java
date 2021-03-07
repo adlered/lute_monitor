@@ -34,12 +34,14 @@ public class Processor implements Runnable {
         } while (!line.equals("\r\n"));
         String content = readLine(inputStream, contentLength);
         stringBuilder.append(content);
-        if (content.length() <= 15) {
-            System.out.println("[Process] " + this.socket.getInetAddress().getHostAddress() +
+        // 消除 content 的换行符，方便打印到日志
+        content = content.replaceAll("\n", "");
+        if (content.length() <= 30) {
+            System.out.println("[Process] " + System.currentTimeMillis() + " | " + this.socket.getInetAddress().getHostAddress() +
                     " | " + content);
         } else {
-            System.out.println("[Process] " + this.socket.getInetAddress().getHostAddress() +
-                    " | " + content.substring(0, 15) + " ......");
+            System.out.println("[Process] " + System.currentTimeMillis() + " | " + this.socket.getInetAddress().getHostAddress() +
+                    " | " + content.substring(0, 30) + " ......");
         }
 
 
@@ -90,6 +92,15 @@ public class Processor implements Runnable {
             } while (!line.equals("\r\n"));
             String content = readLine(inputStream, contentLength);
             stringBuilder.append(content);
+            // 消除 content 的换行符，方便打印到日志
+            content = content.replaceAll("\n", "");
+            if (content.length() <= 30) {
+                System.out.println("[Request] " + System.currentTimeMillis() + " | " + this.socket.getInetAddress().getHostAddress() +
+                        " | " + content);
+            } else {
+                System.out.println("[Request] " + System.currentTimeMillis() + " | " + this.socket.getInetAddress().getHostAddress() +
+                        " | " + content.substring(0, 30) + " ......");
+            }
             String request = stringBuilder.toString();
             String response = requestToServer(request);
             byte[] responseByte = response.getBytes(StandardCharsets.UTF_8);
