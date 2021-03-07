@@ -12,21 +12,5 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
-
-    <dependencies>
-        <!-- https://mvnrepository.com/artifact/com.arronlong/httpclientutil -->
-        <dependency>
-            <groupId>com.arronlong</groupId>
-            <artifactId>httpclientutil</artifactId>
-            <version>1.0.4</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.5.13</version>
-        </dependency>
-    </dependencies>
     
 </project>

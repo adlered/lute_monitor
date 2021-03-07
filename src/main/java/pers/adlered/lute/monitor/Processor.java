@@ -15,7 +15,7 @@ public class Processor implements Runnable {
         this.socket = socket;
     }
 
-    private static String requestToServer(String request) throws IOException {
+    private String requestToServer(String request) throws IOException {
         Socket socket = new Socket(Vals.luteServerIP, Vals.luteServerPort);
         OutputStream outputStream = socket.getOutputStream();
         outputStream.write(request.getBytes(StandardCharsets.UTF_8));
@@ -34,6 +34,14 @@ public class Processor implements Runnable {
         } while (!line.equals("\r\n"));
         String content = readLine(inputStream, contentLength);
         stringBuilder.append(content);
+        if (content.length() <= 15) {
+            System.out.println("[Process] " + this.socket.getInetAddress().getHostAddress() +
+                    " | " + content);
+        } else {
+            System.out.println("[Process] " + this.socket.getInetAddress().getHostAddress() +
+                    " | " + content.substring(0, 15) + " ......");
+        }
+
 
         return stringBuilder.toString();
     }
