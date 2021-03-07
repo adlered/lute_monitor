@@ -36,21 +36,7 @@ public class Processor implements Runnable {
             String content = readLine(inputStream, contentLength);
             stringBuilder.append(content);
             String request = stringBuilder.toString();
-
             String response = requestToServer(request);
-
-            /*String body = "hello lutehttp~~你好世界";
-            Calendar calendar = Calendar.getInstance();
-            SimpleDateFormat greenwichDate = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss 'GMT'", Locale.US);
-            String response = "" +
-                    "HTTP/1.1 200 OK\r\n" +
-                    "Content-Length: " + body.length() + "\r\n" +
-                    "Connection: close\r\n" +
-                    "Content-Type: text/plain; charset=utf-8\r\n" +
-                    "Date: " + greenwichDate.format(calendar.getTime()) + "\r\n" +
-                    "Server: fasthttp\r\n" +
-                    "\r\n" +
-                    body;*/
             byte[] responseByte = response.getBytes(StandardCharsets.UTF_8);
             OutputStream outputStream = socket.getOutputStream();
             outputStream.write(responseByte);
@@ -80,7 +66,6 @@ public class Processor implements Runnable {
         } while (!line.equals("\r\n"));
         String content = readLine(inputStream, contentLength);
         stringBuilder.append(content);
-        System.out.print(content);
 
         return stringBuilder.toString();
     }
