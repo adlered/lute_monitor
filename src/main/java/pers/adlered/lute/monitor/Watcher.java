@@ -5,12 +5,7 @@ import java.net.Socket;
 
 public class Watcher implements Runnable {
 
-    final private int monitorProxyPort;
     private boolean isRunning = true;
-
-    public Watcher(int monitorProxyPort) {
-        this.monitorProxyPort = monitorProxyPort;
-    }
 
     public void stopTheProxy() {
         isRunning = false;
@@ -19,8 +14,8 @@ public class Watcher implements Runnable {
     @Override
     public void run() {
         try {
-            System.out.println("[LuteMonitor] Listening " + monitorProxyPort + " ...");
-            ServerSocket serverSocket = new ServerSocket(monitorProxyPort);
+            System.out.println("[LuteMonitor] Listening " + Vals.monitorProxyPort + " ...");
+            ServerSocket serverSocket = new ServerSocket(Vals.monitorProxyPort);
             while (isRunning) {
                 Socket socket = serverSocket.accept();
                 // IP 频率审核与记录
