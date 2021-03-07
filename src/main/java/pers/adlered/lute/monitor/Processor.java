@@ -1,15 +1,11 @@
 package pers.adlered.lute.monitor;
 
-import com.arronlong.httpclientutil.common.HttpHeader;
-import org.apache.http.Header;
-
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Locale;
 
 public class Processor implements Runnable {
 
@@ -17,34 +13,6 @@ public class Processor implements Runnable {
 
     public Processor(Socket socket) {
         this.socket = socket;
-    }
-
-    @Override
-    public void run() {
-        try {
-            InputStream inputStream = socket.getInputStream();
-            StringBuilder stringBuilder = new StringBuilder();
-            String line;
-            int contentLength = 0;
-            do {
-                line = readLine(inputStream, 0);
-                if (line.startsWith("Content-Length")) {
-                    contentLength = Integer.parseInt(line.split(":")[1].trim());
-                }
-                stringBuilder.append(line);
-            } while (!line.equals("\r\n"));
-            String content = readLine(inputStream, contentLength);
-            stringBuilder.append(content);
-            String request = stringBuilder.toString();
-            String response = requestToServer(request);
-            byte[] responseByte = response.getBytes(StandardCharsets.UTF_8);
-            OutputStream outputStream = socket.getOutputStream();
-            outputStream.write(responseByte);
-            outputStream.flush();
-            socket.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     private static String requestToServer(String request) throws IOException {
@@ -96,6 +64,34 @@ public class Processor implements Runnable {
         lineByteList.clear();
 
         return new String(tmpByteArr, StandardCharsets.UTF_8);
+    }
+
+    @Override
+    public void run() {
+        try {
+            InputStream inputStream = socket.getInputStream();
+            StringBuilder stringBuilder = new StringBuilder();
+            String line;
+            int contentLength = 0;
+            do {
+                line = readLine(inputStream, 0);
+                if (line.startsWith("Content-Length")) {
+                    contentLength = Integer.parseInt(line.split(":")[1].trim());
+                }
+                stringBuilder.append(line);
+            } while (!line.equals("\r\n"));
+            String content = readLine(inputStream, contentLength);
+            stringBuilder.append(content);
+            String request = stringBuilder.toString();
+            String response = requestToServer(request);
+            byte[] responseByte = response.getBytes(StandardCharsets.UTF_8);
+            OutputStream outputStream = socket.getOutputStream();
+            outputStream.write(responseByte);
+            outputStream.flush();
+            socket.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }
