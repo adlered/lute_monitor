@@ -6,7 +6,7 @@
 
 ### 使用方法
 
-在 release 中下载 jar 文件并运行：
+在 [release](https://github.com/adlered/lute_monitor/releases) 中下载 jar 文件并运行：
 
 ```
 java -jar lute_monitor.jar [monitorProxyPort] [luteServer] [ipLimitOptions]
